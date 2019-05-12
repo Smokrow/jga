@@ -1,0 +1,4 @@
+flask
+flask_api
+flask_cors
+pyttsx3

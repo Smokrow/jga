@@ -39,12 +39,15 @@
    <v-flex xs12>
     <v-btn color="info" @click="lower_level()">Before</v-btn>
     <v-btn v-on:click="delete_number()" color="error">Retry</v-btn>
-    <v-btn color="success">Solve</v-btn>
+    <v-btn @click="solve_answer()" color="success">Solve</v-btn>
     <v-btn color="info" @click="add_level()">Next</v-btn>
   </v-flex>
    <v-flex xs12>
-    <v-btn color="info">Play Me</v-btn>
+    <v-btn @click="read_text()" color="info">Play Me</v-btn>
   </v-flex>
+  <p> {{max_questions}} </p>
+  <p> {{current_question}} </p>
+  <p> {{current_level}} </p>
 
     </v-layout>
   </v-container>
@@ -52,36 +55,67 @@
 
 <script>
   export default {
-    data: () => ({
-	answer:[],
-	max_questions:6,
-	current_question:0,
-	valueDeterminate:0
-}),
-  methods: {
-	add_number: function(number_in){
-		if (this.answer.length < 5){
-			this.answer.push(number_in)
-			//console.log(self.answer)
-		}
+	data: () => ({
+		answer:[],
+		max_questions:6,
+		current_question:0,
+		current_level:0,
+		valueDeterminate:0
+	}),
+	
+	created: function(){
+		this.reload_state()
 	},
+	
+	methods: {
+		add_number: function(number_in){
+			this.axios.get("number/"+number_in)
+			if (this.answer.length < 5){
+				this.answer.push(number_in)
+			}
+	},
+
+	reload_state:function(){
+		this.axios.get("state").then(response => (this.update_state(response)))
+	},
+
+	update_state:function(response){
+		console.log(response)
+		this.max_questions = response.data.num_levels-1
+		this.current_level = response.data.max_level
+	},
+	
+	solve_answer:function(){
+		this.axios.get("solve/"+this.current_question+"/"+this.answer.join("")).then(
+		this.reload_state())
+	},
+
+	read_text:function(){
+		this.axios.get("level/"+this.current_question)
+	},
+
 	delete_number: function(){
-		//axios.get('https://localhost:5000')
 		this.answer=[]
 	},
+
 	recalc_status: function(){
 		this.valueDeterminate = 100/this.max_questions * this.current_question
 	},
+
 	add_level:function(){
 		this.change_current(1)
 	},
+
 	lower_level:function(){
 		this.change_current(-1)
 	},
+
 	change_current:function(changed){
 		if(this.current_question+changed<=this.max_questions && this.current_question+changed>=0)
 		{
-			this.current_question+=changed;
+			if(this.current_level >= this.current_question + changed){
+				this.current_question+=changed;
+			}
 			this.recalc_status()
 			//console.log(this.current_question)
 		}
