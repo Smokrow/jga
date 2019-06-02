@@ -34,7 +34,7 @@ def get_state():
     return state
 
 
-@app.route("/api/solve/<int:level>/<str:solve>")
+@app.route("/api/solve/<int:level>/<string:solve>")
 def solve(level, solve):
 
     if level >= get_state()["num_levels"] or level < 0:
