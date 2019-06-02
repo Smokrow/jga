@@ -19,6 +19,12 @@
     <v-btn @click="read_text()" color="info">Play Me</v-btn>
     <v-btn color="info" @click="add_level()">Next</v-btn>
   </v-flex>
+   <v-flex xs12 v-if="!visible">
+    <v-btn color="warning" @click="reset()">Reset all levels</v-btn>
+    <v-btn @click="shutdown()" color="error">Shutdown</v-btn>
+    <v-btn @click="reboot()" color="error">Reboot</v-btn>
+  </v-flex>
+
   <v-flex xs12>
     <vue-touch-keyboard :options="options" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="input" />
   </v-flex>
@@ -66,6 +72,18 @@
           this.visible = false;
         },
 
+	reset(){
+		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/reset").then(response => (this.update_state(response)))
+	},
+
+	shutdown(){
+		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/shutdown").then(response => (this.update_state(response)))
+	},
+	
+	reboot(){
+		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/reboot").then(response => (this.update_state(response)))
+	},
+
 	reload_state:function(){
 		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/state").then(response => (this.update_state(response)))
 	},
@@ -77,7 +95,6 @@
 	},
 	
 	solve_answer:function(){
-		alert(window.location.hostname)
 		console.log(window.location.hostname);
 		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/solve/"+this.current_question+"/"+this.input).then(
 		this.reload_state())
