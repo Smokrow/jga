@@ -37,11 +37,14 @@ def get_state():
 @app.route("/api/solve/<int:level>/<string:solve>")
 def solve(level, solve):
 
+    print(solve)
     if level >= get_state()["num_levels"] or level < 0:
         return "the provided level is not right",status.HTTP_400_BAD_REQUEST
 
     if level is get_state()["max_level"]:
         answer = get_answer(level)
+        print("-----")
+        print(answer)
         if answer == solve:
             save_max_level(level+1)
             return "success",status.HTTP_202_ACCEPTED
@@ -56,6 +59,13 @@ def reset_max_level():
     save_max_level(0)
     return "Ok", status.HTTP_200_OK
 
+@app.route("/api/shutdown")
+def shutdown():
+    os.system('sudo systemctl --no-wall poweroff')
+
+@app.route("/api/reboot")
+def reboot():
+    os.system('sudo systemctl --no-wall reboot')
 
 def save_max_level(level):
     with open("max_level.txt","w") as f:
@@ -66,7 +76,7 @@ def save_max_level(level):
 def get_answer(level):
     with open("answers.txt","r") as f:
         for i in range(level+1):
-            answer=str(f.readline())
+            answer=str(f.readline()).rstrip()
         return answer
         
 
