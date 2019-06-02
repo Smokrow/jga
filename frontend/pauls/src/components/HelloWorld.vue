@@ -69,14 +69,14 @@
 	
 	methods: {
 		add_number: function(number_in){
-			this.axios.get("number/"+number_in)
+			this.axios.get("http://"+window.location.hostname+"/api/number/"+number_in)
 			if (this.answer.length < 5){
 				this.answer.push(number_in)
 			}
 	},
 
 	reload_state:function(){
-		this.axios.get("state").then(response => (this.update_state(response)))
+		this.axios.get("http://"+window.location.hostname+"/api/state").then(response => (this.update_state(response)))
 	},
 
 	update_state:function(response){
@@ -86,12 +86,13 @@
 	},
 	
 	solve_answer:function(){
-		this.axios.get("solve/"+this.current_question+"/"+this.answer.join("")).then(
+		console.log(window.location.hostname);
+		this.axios.get("http://"+window.location.hostname+"/api/solve/"+this.current_question+"/"+this.answer.join("")).then(
 		this.reload_state())
 	},
 
 	read_text:function(){
-		this.axios.get("level/"+this.current_question)
+		this.axios.get("http://"+window.location.hostname+"/api/level/"+this.current_question)
 	},
 
 	delete_number: function(){

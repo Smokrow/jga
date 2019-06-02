@@ -8,27 +8,25 @@ app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-@app.route("/number/<int:number>")
+@app.route("/api/number/<int:number>")
 def read_number(number):
 	engine = pyttsx3.init()
 	engine.say(str(number))
 	engine.runAndWait()
 	return "ok",status.HTTP_200_OK
 
-@app.route("/level/<int:level_num>")
+@app.route("/api/level/<int:level_num>")
 def read_level(level_num):
 
     with open("levels/%i.txt" % level_num,"r") as f:
         text= f.read()
 
         engine = pyttsx3.init()
-        engine.setProperty('voice', 10)
-        engine.setProperty('rate', 150)
         engine.say(text)
         engine.runAndWait()
     return "ok",status.HTTP_200_OK
 
-@app.route("/state")
+@app.route("/api/state")
 def state():
     return jsonify(get_state()),status.HTTP_200_OK
 
@@ -44,7 +42,7 @@ def get_state():
     return state
 
 
-@app.route("/solve/<int:level>/<int:solve>")
+@app.route("/api/solve/<int:level>/<int:solve>")
 def solve(level, solve):
 
     if level >= get_state()["num_levels"] or level < 0:
@@ -61,7 +59,7 @@ def solve(level, solve):
 
     return "ok" ,status.HTTP_200_OK
 
-@app.route("/reset")
+@app.route("/api/reset")
 def reset_max_level():
     save_max_level(0)
     return "Ok", status.HTTP_200_OK
