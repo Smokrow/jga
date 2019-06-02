@@ -7,14 +7,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-
-@app.route("/api/number/<int:number>")
-def read_number(number):
-	engine = pyttsx3.init()
-	engine.say(str(number))
-	engine.runAndWait()
-	return "ok",status.HTTP_200_OK
-
 @app.route("/api/level/<int:level_num>")
 def read_level(level_num):
 
@@ -42,7 +34,7 @@ def get_state():
     return state
 
 
-@app.route("/api/solve/<int:level>/<int:solve>")
+@app.route("/api/solve/<int:level>/<str:solve>")
 def solve(level, solve):
 
     if level >= get_state()["num_levels"] or level < 0:
@@ -74,7 +66,7 @@ def save_max_level(level):
 def get_answer(level):
     with open("answers.txt","r") as f:
         for i in range(level+1):
-            answer=int(f.readline())
+            answer=str(f.readline())
         return answer
         
 
