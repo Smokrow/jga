@@ -12,8 +12,13 @@ def read_level(level_num):
 
     with open("levels/%i.txt" % level_num,"r") as f:
         text= f.read()
-
         engine = pyttsx3.init()
+        voices = engine.getProperty('voices')
+        for voice in voices:
+            print(voice)
+        engine.setProperty("voice","mb-de6")
+        engine.setProperty('volume', 0.1)
+        engine.setProperty("rate",150)
         engine.say(text)
         engine.runAndWait()
     return "ok",status.HTTP_200_OK
@@ -21,6 +26,11 @@ def read_level(level_num):
 @app.route("/api/state")
 def state():
     return jsonify(get_state()),status.HTTP_200_OK
+
+@app.route("/api/stop")
+def stop():
+    os.system("sudo systemctl restart backend.service")
+    return "ok",status.HTTP_200_OK
 
 def get_state():
     state={}
