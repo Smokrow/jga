@@ -22,29 +22,41 @@
 		</v-alert>
 		<v-progress-linear v-model="valueDeterminate"></v-progress-linear>
 	</v-flex>
-	    
-	<v-flex xs12>
+   </v-layout>	
+   <v-layout text-xs-center wrap >
+
+	<v-flex xs4 offset-xs3 >
 		<fieldset>
 			<input type="text" placeholder="Your answer" @focus="show" data-layout="compact" />
 		</fieldset>
-		<v-btn v-if="!visible" @click="solve_answer()" color="success">Solve</v-btn>
 	</v-flex>
-
-	<v-flex v-if="!visible">
-			<v-btn color="info" @click="lower_level()">Before</v-btn>
-			<v-btn flat disabled=True class="red--text">Level {{current_question+1}}</v-btn>
-			<v-btn color="info" @click="add_level()">Next</v-btn>
+	<v-flex xs1 class="mt-4">
+			<v-btn left  @click="solve_answer()" color="success">Solve riddle</v-btn>
 	</v-flex>
-
+   </v-layout>	
+   <v-layout v-if="!visible" text-xs-center wrap >
+	<v-flex offset-xs3 xs2>
+		<v-btn  color="info" @click="lower_level()">Before</v-btn>
+	</v-flex>
+	<v-flex xs2 class="mt-3">
+		<v-card>
+		<p style="font-size:15px"> Level {{current_question+1}}</p>
+		</v-card>
+	</v-flex>
+	<v-flex xs2>
+		<v-btn  color="info" @click="add_level()">Next</v-btn>
+	</v-flex>
+   </v-layout>	
+   <v-layout text-xs-center wrap >
 	<v-flex xs12 v-if="!visible">
 		<v-btn @click="read_text()" color="info">Play Audio</v-btn>
 		<v-btn @click="stop_audio()" color="error">Stop</v-btn>
 	</v-flex>
 
 	<v-flex xs12 v-if="!visible">
-		<v-btn color="warning" @click="reset()">Reset all levels</v-btn>
-		<v-btn @click="shutdown()" color="error">Shutdown</v-btn>
-		<v-btn @click="reboot()" color="error">Reboot</v-btn>
+		<v-btn small color="warning" @click="reset()">Reset all levels</v-btn>
+		<v-btn small @click="shutdown()" color="error">Shutdown</v-btn>
+		<v-btn small @click="reboot()" color="error">Reboot</v-btn>
 	</v-flex>
 
 	<v-flex xs12>
