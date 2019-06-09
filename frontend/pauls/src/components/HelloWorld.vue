@@ -1,42 +1,68 @@
 
 <template>
   <v-container>
-    <v-layout
-      text-xs-center
-      wrap
-    >
-   <v-flex xs12 >
-	<v-progress-linear v-model="valueDeterminate"></v-progress-linear>
-  </v-flex>
-  <v-flex xs12>
-	  <fieldset>
-      		<input type="text" placeholder="Your answer" @focus="show" data-layout="compact" />
-	  </fieldset>
-  </v-flex>
-   <v-flex xs12 v-if="!visible">
-    <v-btn color="info" @click="lower_level()">Before</v-btn>
-    <v-btn @click="solve_answer()" color="success">Solve</v-btn>
-    <v-btn @click="read_text()" color="info">Play Me</v-btn>
-    <v-btn color="info" @click="add_level()">Next</v-btn>
-  </v-flex>
-   <v-flex xs12 v-if="!visible">
-    <v-btn color="warning" @click="reset()">Reset all levels</v-btn>
-    <v-btn @click="shutdown()" color="error">Shutdown</v-btn>
-    <v-btn @click="reboot()" color="error">Reboot</v-btn>
-  </v-flex>
+    <v-layout text-xs-center wrap >
 
-  <v-flex xs12>
-    <vue-touch-keyboard :options="options" v-if="visible" :layout="layout" :cancel="hide" :accept="accept" :input="input" />
-  </v-flex>
-  <div>
-  </div>
+   	<v-flex xs12 >
+		<v-alert 
+			v-model="success"
+			transition="scale-transition"
+      			dismissible
+      			type="success"
+    			>
+      			You reached the next level
+    		</v-alert>
+	 	<v-alert 
+			v-model="false_answer"
+			transition="scale-transition"
+			dismissible
+			type="error"
+			>
+			Wrong answer Loser!
+		</v-alert>
+		<v-progress-linear v-model="valueDeterminate"></v-progress-linear>
+	</v-flex>
+	    
+	<v-flex xs12>
+		<fieldset>
+			<input type="text" placeholder="Your answer" @focus="show" data-layout="compact" />
+		</fieldset>
+		<v-btn v-if="!visible" @click="solve_answer()" color="success">Solve</v-btn>
+	</v-flex>
 
+	<v-flex v-if="!visible">
+			<v-btn color="info" @click="lower_level()">Before</v-btn>
+			<v-btn flat disabled=True class="red--text">Level {{current_question+1}}</v-btn>
+			<v-btn color="info" @click="add_level()">Next</v-btn>
+	</v-flex>
+
+	<v-flex xs12 v-if="!visible">
+		<v-btn @click="read_text()" color="info">Play Audio</v-btn>
+		<v-btn @click="stop_audio()" color="error">Stop</v-btn>
+	</v-flex>
+
+	<v-flex xs12 v-if="!visible">
+		<v-btn color="warning" @click="reset()">Reset all levels</v-btn>
+		<v-btn @click="shutdown()" color="error">Shutdown</v-btn>
+		<v-btn @click="reboot()" color="error">Reboot</v-btn>
+	</v-flex>
+
+	<v-flex xs12>
+		<vue-touch-keyboard 
+			:options="options" 
+			v-if="visible" 
+			:layout="layout" 
+			:cancel="hide" 
+			:accept="accept" 
+			:input="input" />
+	</v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
   export default {
+
 	data: () => ({
 		max_questions:6,
 		current_question:0,
@@ -45,6 +71,8 @@
 		visible: false,
 	      	layout: "normal",
 	      	input: null,
+		success: false,
+		false_answer: false,
 	      	options: {
 			useKbEvents: false,
 			preventClickEvent: false}
@@ -53,84 +81,128 @@
 	created: function(){
 		this.reload_state()
 	},
+
+	watch: {
+    		current_question: function () {
+		this.recalc_status()
+		},
+	},
 	
 	methods: {
-	accept(text) {
-		this.input=text;
-          	this.hide();
-        },
 
-        show(e) {
-          this.input = e.target;
-          this.layout = e.target.dataset.layout;
 
-          if (!this.visible)
-            this.visible = true
-        },
+		accept(text) {
+			this.input=text;
+			this.hide();
+		},
 
-        hide() {
-          this.visible = false;
-        },
 
-	reset(){
-		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/reset").then(response => (this.update_state(response)))
-	},
+		show(e) {
+			this.input = e.target;
+			this.layout = e.target.dataset.layout;
 
-	shutdown(){
-		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/shutdown").then(response => (this.update_state(response)))
-	},
+			if (!this.visible)
+				this.visible = true
+		},
+
+
+		hide() {
+			this.visible = false;
+		},
+
+
+		reset(){
+			this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/reset")
+				.then(response => (
+					this.reload_state()
+					)
+				)
+		},
+
+		shutdown(){
+			this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/shutdown")
+				.then(response => (
+					this.update_state(response)
+					)
+				)
+		},
 	
-	reboot(){
-		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/reboot").then(response => (this.update_state(response)))
-	},
 
-	reload_state:function(){
-		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/state").then(response => (this.update_state(response)))
-	},
+		reboot(){
+			this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/reboot")
+				.then(response => (this.update_state(response))
+				)
+		},
 
-	update_state:function(response){
-		console.log(response)
-		this.max_questions = response.data.num_levels-1
-		this.current_level = response.data.max_level
-	},
+
+		reload_state:function(){
+			this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/state")
+				.then(response => (this.update_state(response)))
+		},
+
+		update_state:function(response){
+			console.log(response)
+			this.max_questions = response.data.num_levels-1
+			this.current_level = response.data.max_level
+			this.current_question = this.current_level
+		},
 	
-	solve_answer:function(){
-		console.log(window.location.hostname);
-		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/solve/"+this.current_question+"/"+this.input).then(
-		this.reload_state())
-	},
+		solve_answer:function(){
+			console.log(window.location.hostname);
+			var url = "http://"+window.location.hostname+":"+window.location.port+"/api/solve/"+this.current_question+"/"+this.input 
+			this.axios.get(url)
+				.then(response =>{ 
+					this.reload_state();
+					if(response.status==202){
+						this.success=true;
+						this.read_text();
+					};
+					if(response.status==204){
+						this.false_answer=true;
+					}
+				})
+		},
 
-	read_text:function(){
-		this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/level/"+this.current_question)
-	},
 
-	delete_number: function(){
-		this.answer=[]
-	},
+		read_text:function(){
+			this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/level/"+this.current_question)
+		},
 
-	recalc_status: function(){
-		this.valueDeterminate = 100/this.max_questions * this.current_question
-	},
 
-	add_level:function(){
-		this.change_current(1)
-	},
+		stop_audio:function(){
+			this.axios.get("http://"+window.location.hostname+":"+window.location.port+"/api/stop");
+		},
 
-	lower_level:function(){
-		this.change_current(-1)
-	},
 
-	change_current:function(changed){
-		if(this.current_question+changed<=this.max_questions && this.current_question+changed>=0)
-		{
-			if(this.current_level >= this.current_question + changed){
-				this.current_question+=changed;
+		delete_number: function(){
+			this.answer=[]
+		},
+
+
+		recalc_status: function(){
+			this.valueDeterminate = 100/this.max_questions * this.current_question
+		},
+
+
+		add_level:function(){
+			this.change_current(1)
+		},
+		
+
+		lower_level:function(){
+			this.change_current(-1)
+		},
+
+
+		change_current:function(changed){
+			if(this.current_question+changed<=this.max_questions && this.current_question+changed>=0)
+			{
+				if(this.current_level >= this.current_question + changed){
+					this.current_question+=changed;
+				}
 			}
-			this.recalc_status()
-			//console.log(this.current_question)
 		}
 	}
-}
   }
 </script>
 
