@@ -66,7 +66,9 @@
 			:layout="layout" 
 			:cancel="hide" 
 			:accept="accept" 
-			:input="input" />
+			:input="input" 
+			:change="change"/>
+
 	</v-flex>
     </v-layout>
   </v-container>
@@ -99,7 +101,7 @@
     		current_question: function () {
 		this.recalc_status()
 		this.disabled=false
-		if (current_question==max_questions){
+		if (this.current_question>=this.max_questions){
 			this.disabled=true
 		}
 		},
@@ -118,6 +120,10 @@
 			this.input=text;
 			this.hide();
 		},
+		
+		change(text) {
+			this.input=text;
+		}
 
 
 		show(e) {
