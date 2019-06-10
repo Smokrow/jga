@@ -25,7 +25,7 @@
    </v-layout>	
    <v-layout text-xs-center wrap >
 
-	<v-flex xs4 offset-xs3 >
+	<v-flex xs4 offset-xs2 >
 		<fieldset>
 			<input type="text" placeholder="Your answer" @focus="show" data-layout="compact" />
 		</fieldset>
@@ -38,11 +38,9 @@
 	<v-flex offset-xs3 xs2>
 		<v-btn  color="info" @click="lower_level()">Before</v-btn>
 	</v-flex>
-	<v-flex xs2 class="mt-3">
-		<v-card>
-		<p style="font-size:15px"> Level {{current_question+1}}</p>
+		<v-card xs2>
+		<v-card-text style="font-size:15px"> Level {{current_question+1}}</v-card-text>
 		</v-card>
-	</v-flex>
 	<v-flex xs2>
 		<v-btn  color="info" @click="add_level()">Next</v-btn>
 	</v-flex>
@@ -245,7 +243,7 @@ html {
 
 fieldset {
 	display: block;
-	width: 300px;
+	width: 200px;
 	padding: 15px;
 	margin: 15px auto;
 	border-style: solid;
