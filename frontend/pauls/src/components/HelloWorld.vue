@@ -31,12 +31,12 @@
 		</fieldset>
 	</v-flex>
 	<v-flex xs1 class="mt-4">
-			<v-btn left  @click="solve_answer()" color="success">Solve riddle</v-btn>
+			<v-btn left  :disabled="disabled_solve" v-if="!visible" @click="solve_answer()" color="success">Solve riddle</v-btn>
 	</v-flex>
    </v-layout>	
    <v-layout v-if="!visible" text-xs-center wrap>
 	<v-flex>
-		<v-btn  color="info" @click="lower_level()">Before</v-btn>
+		<v-btn  color="info" @click="lower_level()" :disabled="disabled_back">Before</v-btn>
 	</v-flex> 
 	<v-flex>
 		<v-card>
@@ -44,7 +44,7 @@
 		</v-card>
 	</v-flex>
 	<v-flex >
-		<v-btn  color="info"  @click="add_level()">Next</v-btn>
+		<v-btn  color="info" :disabled="disabled_next" @click="add_level()">Next</v-btn>
 	</v-flex>
    </v-layout>	
    <v-layout text-xs-center wrap >
@@ -58,13 +58,14 @@
 		<v-btn small @click="shutdown()" color="error">Shutdown</v-btn>
 		<v-btn small  @click="reboot()" color="error">Reboot</v-btn>
 	</v-flex>
+	{{max_questions}}{{current_question}}{{current_level}}{{disabled_solve}}
 
 	<v-flex xs12>
 		<vue-touch-keyboard 
 			:options="options" 
 			v-if="visible" 
 			:layout="layout" 
-			:cancel="hide" 
+			:cancel="accept" 
 			:accept="accept" 
 			:input="input" />
 
@@ -82,7 +83,9 @@
 		current_level:0,
 		valueDeterminate:0,
 		visible: false,
-		disabled: false,
+		disabled_solve: false,
+		disabled_next: false,
+		disabled_back: false,
 	      	layout: "normal",
 	      	input: null,
 		success: false,
@@ -93,20 +96,21 @@
 	}),
 	
 	created: function(){
+		this.current_question=0
 		this.reload_state()
+		this.set_state()
 	},
 
 	watch: {
     		current_question: function () {
-		this.recalc_status()
-		this.disabled=false
-		if (this.current_question>=this.max_questions){
-			this.disabled=true
-		}
+			this.recalc_status()
+			console.log("log")
+			this.set_state()
 		},
 		current_level:function(){
 			this.current_question=this.current_level
 			this.read_text()
+			this.set_state()
 		}
 
 
@@ -120,10 +124,33 @@
 			this.hide();
 		},
 		
-		change(text) {
-			this.input=text;
+		set_state(){
+			console.log("state")
+			if (this.current_question<this.current_level){
+				this.disabled_solve=true
+				this.disabled_next=false
+			}
+			else{
+				console.log("hit")
+				this.disabled_solve=false
+				this.disabled_next=true
+			}
+			if(this.current_level==this.max_questions)
+			{
+				console.log("hitti")
+				this.disabled_solve=true
+			}
+			
+			if(this.current_question==0)
+			{
+				this.disabled_back=true
+			}
+			else
+			{
+				this.disabled_back=false
+			}
 		},
-
+		
 
 		show(e) {
 			this.input = e.target;
