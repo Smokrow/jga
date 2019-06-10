@@ -98,6 +98,10 @@
     		current_question: function () {
 		this.recalc_status()
 		},
+		current_level:function(){
+			this.current_question=this.current_level
+		}
+
 	},
 	
 	methods: {
@@ -167,7 +171,6 @@
 					this.reload_state();
 					if(response.status==202){
 						this.success=true;
-						this.read_text();
 					};
 					if(response.status==204){
 						this.false_answer=true;
