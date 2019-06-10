@@ -56,7 +56,7 @@
 	<v-flex xs12 v-if="!visible">
 		<v-btn small color="warning" @click="reset()">Reset all levels</v-btn>
 		<v-btn small @click="shutdown()" color="error">Shutdown</v-btn>
-		<v-btn small disabled="diabled" @click="reboot()" color="error">Reboot</v-btn>
+		<v-btn small  @click="reboot()" color="error">Reboot</v-btn>
 	</v-flex>
 
 	<v-flex xs12>
@@ -66,8 +66,7 @@
 			:layout="layout" 
 			:cancel="hide" 
 			:accept="accept" 
-			:input="input" 
-			:change="change"/>
+			:input="input" />
 
 	</v-flex>
     </v-layout>
