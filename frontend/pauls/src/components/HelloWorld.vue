@@ -31,7 +31,7 @@
 		</fieldset>
 	</v-flex>
 	<v-flex xs1 class="mt-4">
-			<v-btn left  @click="solve_answer()" color="success">Solve riddle</v-btn>
+			<v-btn left v-if="!visible" disabled="disabled" @click="solve_answer()" color="success">Solve riddle</v-btn>
 	</v-flex>
    </v-layout>	
    <v-layout v-if="!visible" text-xs-center wrap>
@@ -44,7 +44,7 @@
 		</v-card>
 	</v-flex>
 	<v-flex >
-		<v-btn  color="info" @click="add_level()">Next</v-btn>
+		<v-btn  color="info" disabled="disabled" @click="add_level()">Next</v-btn>
 	</v-flex>
    </v-layout>	
    <v-layout text-xs-center wrap >
@@ -81,6 +81,7 @@
 		current_level:0,
 		valueDeterminate:0,
 		visible: false,
+		disabled: false,
 	      	layout: "normal",
 	      	input: null,
 		success: false,
@@ -97,11 +98,16 @@
 	watch: {
     		current_question: function () {
 		this.recalc_status()
+		this.disabled=false
+		if (current_question==max_questions){
+			this.disabled=true
+		}
 		},
 		current_level:function(){
 			this.current_question=this.current_level
 			this.read_text()
 		}
+
 
 	},
 	
