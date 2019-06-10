@@ -123,7 +123,7 @@
 		
 		change(text) {
 			this.input=text;
-		}
+		},
 
 
 		show(e) {
