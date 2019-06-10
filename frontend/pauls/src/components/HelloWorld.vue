@@ -31,7 +31,7 @@
 		</fieldset>
 	</v-flex>
 	<v-flex xs1 class="mt-4">
-			<v-btn left v-if="!visible" disabled="disabled" @click="solve_answer()" color="success">Solve riddle</v-btn>
+			<v-btn left  @click="solve_answer()" color="success">Solve riddle</v-btn>
 	</v-flex>
    </v-layout>	
    <v-layout v-if="!visible" text-xs-center wrap>
@@ -44,7 +44,7 @@
 		</v-card>
 	</v-flex>
 	<v-flex >
-		<v-btn  color="info" disabled="disabled" @click="add_level()">Next</v-btn>
+		<v-btn  color="info"  @click="add_level()">Next</v-btn>
 	</v-flex>
    </v-layout>	
    <v-layout text-xs-center wrap >
@@ -56,7 +56,7 @@
 	<v-flex xs12 v-if="!visible">
 		<v-btn small color="warning" @click="reset()">Reset all levels</v-btn>
 		<v-btn small @click="shutdown()" color="error">Shutdown</v-btn>
-		<v-btn small @click="reboot()" color="error">Reboot</v-btn>
+		<v-btn small disabled="diabled" @click="reboot()" color="error">Reboot</v-btn>
 	</v-flex>
 
 	<v-flex xs12>
