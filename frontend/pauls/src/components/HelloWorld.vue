@@ -34,14 +34,16 @@
 			<v-btn left  @click="solve_answer()" color="success">Solve riddle</v-btn>
 	</v-flex>
    </v-layout>	
-   <v-layout v-if="!visible" text-xs-center wrap >
-	<v-flex offset-xs3 xs2>
+   <v-layout v-if="!visible" text-xs-center wrap>
+	<v-flex>
 		<v-btn  color="info" @click="lower_level()">Before</v-btn>
-	</v-flex>
-		<v-card xs2>
-		<v-card-text style="font-size:15px"> Level {{current_question+1}}</v-card-text>
+	</v-flex> 
+	<v-flex>
+		<v-card>
+			<v-card-text>Level {{current_question+1}}</v-card-text>
 		</v-card>
-	<v-flex xs2>
+	</v-flex>
+	<v-flex >
 		<v-btn  color="info" @click="add_level()">Next</v-btn>
 	</v-flex>
    </v-layout>	
@@ -243,7 +245,7 @@ html {
 
 fieldset {
 	display: block;
-	width: 200px;
+	/*width: 200px;*/
 	padding: 15px;
 	margin: 15px auto;
 	border-style: solid;
