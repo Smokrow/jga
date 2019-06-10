@@ -1,2 +1,4 @@
- 1
+ Hallo Frau Cramer. Willkommen zum neuen Beta Test.
+ Die Antwort des ersten Levels ist 2 + 2.
+
 
