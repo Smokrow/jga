@@ -100,6 +100,7 @@
 		},
 		current_level:function(){
 			this.current_question=this.current_level
+			this.read_text()
 		}
 
 	},
