@@ -36,7 +36,7 @@
    </v-layout>	
    <v-layout v-if="!visible" text-xs-center wrap>
 	<v-flex>
-		<v-btn  color="info" @click="lower_level()" :disabled="disabled_back">Before</v-btn>
+		<v-btn  color="info" @click="lower_level()" :disabled="disabled_back">Back</v-btn>
 	</v-flex> 
 	<v-flex>
 		<v-card>
@@ -58,7 +58,6 @@
 		<v-btn small @click="shutdown()" color="error">Shutdown</v-btn>
 		<v-btn small  @click="reboot()" color="error">Reboot</v-btn>
 	</v-flex>
-	{{max_questions}}{{current_question}}{{current_level}}{{disabled_solve}}
 
 	<v-flex xs12>
 		<vue-touch-keyboard 
@@ -210,6 +209,7 @@
 					this.reload_state();
 					if(response.status==202){
 						this.success=true;
+						this.input=""
 					};
 					if(response.status==204){
 						this.false_answer=true;

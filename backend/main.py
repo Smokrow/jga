@@ -17,7 +17,7 @@ def read_level(level_num):
         for voice in voices:
             print(voice)
         engine.setProperty("voice","mb-de6")
-        engine.setProperty('volume', 0.1)
+        engine.setProperty('volume', 0.4)
         engine.setProperty("rate",150)
         engine.say(text)
         engine.runAndWait()
@@ -53,9 +53,10 @@ def solve(level, solve):
 
     if level is get_state()["max_level"]:
         answer = get_answer(level)
+        answer = answer.lower()
         print("-----")
         print(answer)
-        if answer == solve:
+        if answer == solve.lower():
             save_max_level(level+1)
             return "success",status.HTTP_202_ACCEPTED
         else:
